@@ -1,0 +1,224 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Back end for gallery",
+    "description": "Простой бэкэнд для галереи с одним пользователем, без регистрации  и  облачной СУБД MongoDB",
+    "version": "1.0",
+    "contact": {
+      "email": "_max_kot@mail.ru"
+    }
+  },
+  "produces": [
+    "application/json"
+  ],
+  "host": "localhost:3000",
+  "basePath": "",
+  "paths": {
+    "/login": {
+      "post": {
+        "x-swagger-router-controller": "middleware-name1",
+        "operationId": "swagTest",
+        "tags": [
+          "/login"
+        ],
+        "description": "Логинизация пользователя",
+        "parameters": [
+          {
+            "name": "{email, password}",
+            "in": "body",
+            "description": "Электронный адрес и пароль пользователя",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": {
+                "email": "_max_kot@mail.ru",
+                "password": "123456"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User object + JWS token",
+            "schema": {
+              "type": "string",
+              "example": {
+                "user": {
+                  "_id": "5ff46730dd0c4c2218b",
+                  "name": "Maksim",
+                  "email": "_max_kot@mail.ru",
+                  "password": "$2a$10$nLHFCWF",
+                  "__v": 0
+                },
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFrc2ltIiwiZW1haWwiOiJfbWF4X2tvdEBtYWlsLnJ1IiwiX2lkIjoiNWZmNDY3MzBkZDBjNGMyMjE4Yjk1MTEwIiwiaWF0IjoxNjEyOTAyODQ4LCJleHAiOjE2MTI5ODkyNDh9.iZkKjK109PgZaD-JzAPhnfsiMn4F0sr0U1cZiKpY-KM"
+              }
+            }
+          },
+          "404": {
+            "description": "Неправильный email или пароль",
+            "schema": {
+              "type": "string",
+              "example": "Неправильный email или пароль"
+            }
+          }
+        }
+      }
+    },
+    "/loadImage": {
+      "post": {
+        "x-swagger-router-controller": "middleware-name1",
+        "operationId": "swagTest",
+        "tags": [
+          "/loadImage"
+        ],
+        "description": "Загрузка изображений",
+        "parameters": [
+          {
+            "name": "JWS token",
+            "in": "header",
+            "description": "JWS токен полученный при авторизации",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": {
+                "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFrc2ltIiwiZW1haWwiOiJfbWF4X2tvdEBtYWlsLnJ1IiwiX2lkIjoiNWZmNDY3MzBkZDBjNGMyMjE4Yjk1MTEwIiwiaWF0IjoxNjEyOTAyODQ4LCJleHAiOjE2MTI5ODkyNDh9.iZkKjK109PgZaD-JzAPhnfsiMn4F0sr0U1cZiKpY-KM"
+              }
+            }
+          },
+          {
+            "name": "load file",
+            "in": "formData",
+            "description": "Загрузка файлов с компьютера",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Файлы успешно добавлены",
+            "schema": {
+              "type": "string",
+              "example": "Файлы успешно добавлены"
+            }
+          },
+          "404": {
+            "description": "Ошибка загрузки файлов",
+            "schema": {
+              "type": "string",
+              "example": "Ошибка загрузки файлов"
+            }
+          }
+        }
+      }
+    },
+    "/getImage": {
+      "get": {
+        "x-swagger-router-controller": "middleware-name1",
+        "operationId": "swagTest",
+        "tags": [
+          "/getImage"
+        ],
+        "description": "Получить изображение",
+        "parameters": [
+          {
+            "name": "Номер страницы и количкество на странице",
+            "in": "body",
+            "description": "получение изображений",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "items": {
+                "type": "object"
+              },
+              "example": {
+                "page": "2",
+                "quanity": "2"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Массив 'docs' с изображениями и параметры коллекции где хранятся изображения",
+            "schema": {
+              "type": "string",
+              "example": {
+
+                "docs": [
+                  {"_id": "6022f31267c59a1ffc1970f4",
+                    "originalname": "IMG_20180526_165223.jpg",
+                    "path": "uploads\\203ccafdaac0ad261d8f892fcf8716d8",
+                    "filename": "203ccafdaac0ad261d8f892fcf8716d8",
+                    "__v": 0},
+
+                  {"_id": "6022f31267c59a1ffc1970f5",
+                    "originalname": "IMG_20180530_214554.jpg",
+                    "path": "uploads\\905f5f56937b05d90073253efe3bbbd0",
+                    "filename": "905f5f56937b05d90073253efe3bbbd0",
+                    "__v": 0}
+                ],
+                "totalDocs": 12,
+                "limit": 4,
+                "totalPages": 3,
+                "page": 2,
+                "pagingCounter": 5,
+                "hasPrevPage": true,
+                "hasNextPage": true,
+                "prevPage": 1,
+                "nextPage": 3
+              }
+            }
+          }
+        }
+      }
+    },
+    "/deleteImage": {
+      "delete": {
+        "x-swagger-router-controller": "middleware-name1",
+        "operationId": "swagTest",
+        "tags": [
+          "/deleteImage"
+        ],
+        "description": "Удаление изображений",
+        "parameters": [
+          {
+            "name": "Массив с именами изображений",
+            "in": "body",
+            "description": "Массив с именами изображений",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "array"
+              },
+              "example": ["a640f1547eb30f73ed6954141fc10702",
+                "c2b0851686df7185753f7e8d3b72a366"]
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Файлы успешно удалены",
+            "schema": {
+              "type": "string",
+              "example": "Файлы успешно удалены"
+            }
+          },
+          "404": {
+            "description": "Ошибка удаления файлов",
+            "schema": {
+              "type": "string",
+              "example": "Ошибка удаления файлов"
+            }
+          }
+        }
+      }
+    }
+  }
+}
