@@ -4,15 +4,16 @@
  * Module dependencies.
  */
 
-let app = require('../app');
-let debug = require('debug')('backproject:server');
-let http = require('http');
-const mongoose = require('mongoose')
-const keys = require('../keys/index');
+let app = require('../app')
+let debug = require('debug')('backproject:server')
+let http = require('http')
+//const mongoose = require('mongoose')
+const mysql = require('mysql2')
+const keys = require('../keys/index')
 
-async function start () {
+/*async function start () {
   try {
-await  mongoose.connect("mongodb+srv://maksim:8u2upvDe0W1dp945@cluster0-mjkka.mongodb.net/backEndGallery", {
+await  mongoose.connect('mongodb+srv://maksim:8u2upvDe0W1dp945@cluster0-mjkka.mongodb.net/backEndGallery', {
   useNewUrlParser:true,
   useFindAndModify: false,
   useUnifiedTopology: true
@@ -21,7 +22,20 @@ await  mongoose.connect("mongodb+srv://maksim:8u2upvDe0W1dp945@cluster0-mjkka.mo
     console.log(e)
   }
 }
-start()
+start()*/
+
+const connectionMysql = mysql.createConnection({
+  host:'localhost',
+  user: 'root',
+  password: "qwerty"
+})
+connectionMysql.connect(function(err){
+  if(err) {
+    return console.error("Ошибка: "+ err.message)
+  }else {
+    console.log("Подключение к серверу MySQL установаленно")
+  }
+})
 
 /**
  * Get port from environment and store in Express.
