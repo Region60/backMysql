@@ -1,28 +1,15 @@
 #!/usr/bin/env node
 
+
 /**
  * Module dependencies.
  */
-
+let mysql = require('mysql2')
 let app = require('../app')
 let debug = require('debug')('backproject:server')
 let http = require('http')
-//const mongoose = require('mongoose')
-const mysql = require('mysql2')
 const keys = require('../keys/index')
 
-/*async function start () {
-  try {
-await  mongoose.connect('mongodb+srv://maksim:8u2upvDe0W1dp945@cluster0-mjkka.mongodb.net/backEndGallery', {
-  useNewUrlParser:true,
-  useFindAndModify: false,
-  useUnifiedTopology: true
-})
-  }catch (e) {
-    console.log(e)
-  }
-}
-start()*/
 
 const connectionMysql = mysql.createConnection({
   host:'localhost',
@@ -36,8 +23,24 @@ connectionMysql.connect(function(err){
     console.log("Подключение к серверу MySQL установаленно")
   }
 })
+connectionMysql.query('SHOW DATABASES;',
+    function(err, results, fields) {
+  if(err){
+    return console.error('Ошибка при чтении списка баз данных' + err)
+  }else{
+    let NAME_DB = 'appdb'
+    if(results.find((i)=>i.Database===NAME_DB)){
+      console.log ( 'база есть')
+    }else{
+      connectionMysql.query(`CREATE DATABASE ${NAME_DB}`,
+          function (err) {
+            if(err) return console.error('Ошибка при создании базы данных' + err)
+          })
+    }
+  }
+    })
 
-/**
+/**S
  * Get port from environment and store in Express.
  */
 

@@ -9,7 +9,6 @@ const helmet =  require('helmet')
 const compression =  require('compression')
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 
 const app = express();
 
@@ -38,7 +37,6 @@ app.use(compression())
 
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 app.use(function (req, res, next) {
     next(createError(404));
