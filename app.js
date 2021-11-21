@@ -2,7 +2,6 @@ const createError = require('http-errors');
 const express = require('express');
 const exphbs = require('express-handlebars')
 const path = require('path');
-const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const swaggerUi =  require('swagger-ui-express')
 const helmet =  require('helmet')
@@ -28,7 +27,6 @@ app.set('view engine', 'hbs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'uploads')));
 app.use('/api-docs', swaggerUi.serve)
