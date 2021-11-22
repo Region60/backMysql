@@ -44,6 +44,15 @@ function createDataBase() {
                             console.log(`База данных ${NAME_DB} подключена`)
                         }
                     })
+                connectionMysql.query(`SHOW TABLES FROM ${NAME_DB} LIKE 'users';`,
+                    function(err,results) {
+                        if (err) {
+                            return console.error('Ошибка при провеке таблицы ' + err)
+                        } else {
+                            console.log(results[0])
+                        }
+                    })
+
                 connectionMysql.query('CREATE TABLE users (Id int primary key auto_increment,UserEmail varchar(20),UserPassword varchar(20),FirstName varchar(20));',
                     function (err) {
                         if (err) {
