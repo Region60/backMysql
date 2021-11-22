@@ -30,7 +30,8 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'uploads')));
 app.use('/api-docs', swaggerUi.serve)
-//app.use(helmet())
+app.use(helmet())
+
 app.use(compression())
 
 

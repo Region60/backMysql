@@ -6,7 +6,8 @@ const connectionMysql = mysql.createConnection({
     user: 'root',
     password: "qwerty"
 })
-function connectDataBase (){
+
+function connectDataBase() {
     connectionMysql.connect(function (err) {
         if (err) {
             return console.error("Ошибка: " + err.message)
@@ -15,7 +16,8 @@ function connectDataBase (){
         }
     })
 }
-function createDataBase (){
+
+function createDataBase() {
     connectionMysql.query('SHOW DATABASES;',
         function (err, results, fields) {
             if (err) {
@@ -33,21 +35,31 @@ function createDataBase (){
                                 console.log(`База данных ${NAME_DB} создана`)
                             }
                         })
-                    connectionMysql.query(`USE ${NAME_DB}`,
-                        function (err) {
-                            if (err) {
-                                return console.error('Ошибка при подключении базы данных' + err)
-                            } else {
-                                console.log(`База данных ${NAME_DB} подключена`)
-                            }
-                        })
                 }
+                connectionMysql.query(`USE ${NAME_DB}`,
+                    function (err) {
+                        if (err) {
+                            return console.error('Ошибка при подключении базы данных ' + err)
+                        } else {
+                            console.log(`База данных ${NAME_DB} подключена`)
+                        }
+                    })
+                connectionMysql.query('CREATE TABLE users (Id int primary key auto_increment,UserEmail varchar(20),UserPassword varchar(20),FirstName varchar(20));',
+                    function (err) {
+                        if (err) {
+                            return console.error('Ошибка создания таблицы users ' + err)
+                        } else {
+                            console.log('таблица users создана')
+                        }
+                    })
+
             }
         })
 
 }
-/*function createUser () {
-    connectionMysql.query('INSERT INTO users (log)values("fdfd")',
+
+function createUser(UserEmail, UserPassword,FirstName) {
+    connectionMysql.query(`INSERT INTO users (UserEmail, UserPassword, FirstName)values(${UserEmail},${UserPassword},${FirstName})`,
         function (err) {
             if (err) {
                 return console.error('Ошибка при регистрации пользователя>>' + err)
@@ -55,7 +67,8 @@ function createDataBase (){
                 console.log(`пользователь создан`)
             }
 
-        })}*/
+        })
+}
 
 
 module.exports.connectDataBase = connectDataBase
