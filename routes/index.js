@@ -9,7 +9,6 @@ const multer = require("multer")
 const upload = multer({dest: 'uploads/'})
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('../public/swagger.json')
-
 /* GET home page. */
 router.get('/', (req, res, next) => {
     res.render('index', {title: 'BackEnd'});
