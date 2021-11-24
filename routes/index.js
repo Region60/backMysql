@@ -113,7 +113,7 @@ router.get('/getImage', async (req, res) => {
 
 router.post('/register', async (req, res,) => {
     try {
-        const {FirstName, UserEmail, userPassword} = req.body
+        const {firstName,userEmail, userPassword} = req.body
         //const candidate = await User.findOne({email})
         if (candidate) {
             console.log('Пользователь найден:' + candidate)
