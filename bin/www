@@ -13,13 +13,9 @@ let http = require('http')
 const keys = require('../keys/index')
 
 
-dataBase.connectDataBase()
 dataBase.createDataBase()
-setTimeout(()=>console.log(dataBase.findUser('maxkot@gmail.com')),1000)
-//dataBase.createUser()
-/**S
- * Get port from environment and store in Express.
- */
+setTimeout(async ()=>console.log( await dataBase.findUser('maxkot@gmail.com')), 1000)
+
 
 let port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
