@@ -16,17 +16,39 @@ router.get('/', (req, res, next) => {
     res.render('index', {title: 'BackEnd'});
 });
 
+router.post('/register', async (req, res,) => {
+    try {
+        const {firstName, userEmail, userPassword} = req.body
+        const candidate = await dataBase.findUser(userEmail)
+
+        if (candidate) {
+            console.log('Пользователь найден:' + candidate)
+            res.send('Пользователь с таким email уже существует')
+        } else {
+            const hashPassword = await bcrypt.hash(userPassword, 10)
+            dataBase.createUser(firstName, userEmail, hashPassword)
+            return res.status(200).json({
+                success: true,
+                message: "Ползователь создан"
+            })
+        }
+    } catch (e) {
+        console.log(e)
+    }
+})
+
 router.post('/login', async (req, res) => {
     try {
-        const {email, password} = req.body
-        //const candidate = await User.findOne({email})
+        const {userEmail, userPassword} = req.body
+        const candidate = await dataBase.findUser(userEmail)
+        //console.log(candidate)
         if (!candidate) {
             return res.status(404).json({
                 error: true,
                 message: "Неправильный email или пароль"
             })
         }
-        bcrypt.compare(password, candidate.password, function (err, valid) {
+        bcrypt.compare(userPassword, candidate.UserPassword, function (err, valid) {
             if (!valid) {
                 return res.status(404).json({
                     error: true,
@@ -92,6 +114,7 @@ router.delete('/deleteImage', auth, async (req, res) => {
 })
 
 router.get('/getImage', async (req, res) => {
+
     try {
         console.log(req.body)
         const options = {
@@ -113,25 +136,8 @@ router.get('/getImage', async (req, res) => {
     }
 })
 
-router.post('/register', async (req, res,) => {
-    try {
-        const {firstName,userEmail, userPassword} = req.body
-        const candidate = await dataBase.findUser(userEmail)
-        if (candidate) {
-            console.log('Пользователь найден:' + candidate)
-            res.send('Пользователь с таким email уже существует')
-        } else {
-            const hashPassword = await bcrypt.hash(userPassword, 10)
-            const user = dataBase.createUser(name, UserEmail, hashPassword)
-            res.send('Пользователь создан')
-        }
-    } catch (e) {
-        console.log(e)
-    }
-})
 
 router.get('/api-docs', swaggerUi.setup(swaggerDocument))
-
 
 
 module.exports = router;

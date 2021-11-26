@@ -10,81 +10,92 @@ const createPoolMysql = mysql.createPool({
     password: 'qwerty',
     database: NAME_DB,
     waitForConnections: true,
-    connectionLimit:10,
+    connectionLimit: 10,
     queueLimit: 0
 })
 
 
-
 function createDataBase() {
-    createPoolMysql.query('SHOW DATABASES;',
+    const connection = mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: 'qwerty',
+
+    });
+    connection.connect(function (err) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            return;
+        }
+
+        console.log('connected as id ' + connection.threadId);
+    });
+
+    connection.query('SHOW DATABASES;',
         function (err, results, fields) {
             if (err) {
-                return console.error('Ошибка при чтении списка баз данных.'.bgRed + err)
+                return console.error(`Ошибка при чтении списка баз данных. ${err}`.bgRed.black)
             } else {
                 if (results.find((i) => i.Database === NAME_DB)) {
                     console.log(`База данных ${NAME_DB} уже создана`.green)
                 } else {
-                    createPoolMysql.query(`CREATE DATABASE ${NAME_DB}`,
-                        function (err) {
-                            if (err) {
-                                return console.error('Ошибка при создании базы данных: ${NAME_DB} '.bgRed + err)
-                            } else {
-                                console.log(`База данных ${NAME_DB} создана`.green)
-                            }
+                    connection.promise().query(`CREATE DATABASE ${NAME_DB}`)
+                        .then(() => {
+                            console.log(`База данных ${NAME_DB} создана`.green);
                         })
-                }
-                createPoolMysql.query(`USE ${NAME_DB}`,
-                    function (err) {
-                        if (err) {
-                            return console.error('Ошибка при подключении базы данных.'.red + err)
-                        } else {
-                            console.log(`База данных ${NAME_DB} подключена`.green)
-                        }
-                    })
-                createPoolMysql.query(`SHOW TABLES FROM ${NAME_DB} LIKE '${NAME_TABLE}';`,
-                    function (err, results) {
-                        if (err) {
-                            return console.error(`Ошибка при провеке таблицы ${NAME_TABLE}.`.bgRed + err)
-                        } else {
-                            if (results.find((i) => i[`Tables_in_appdb (${NAME_TABLE})` === NAME_TABLE])) {
-                                console.log(`таблица ${NAME_TABLE} уже существует`.green)
-                            } else {
-                                createPoolMysql.query(`CREATE TABLE ${NAME_TABLE} (Id int primary key auto_increment,UserEmail varchar(20),UserPassword varchar(20),FirstName varchar(20));`,
-                                    function (err) {
-                                        if (err) {
-                                            return console.error(`Ошибка создания таблицы: ${NAME_TABLE}.`.bgRed + err)
-                                        } else {
-                                            console.log(`таблица '${NAME_TABLE}' создана`.green)
-                                        }
-                                    })
-                            }
+                        .catch(console.log)
+                        .then(() => connection.end())
 
-                        }
-                    })
+
+                }
             }
         })
 }
 
-  async function findUser(userEmail) {
-    function requestFindUser (email){
+function createTable() {
+    createPoolMysql.query(`SHOW TABLES FROM ${NAME_DB} LIKE '${NAME_TABLE}';`,
+        function (err, results) {
+            if (err) {
+                return console.error(`Ошибка при провеке таблицы ${NAME_TABLE}. ${err}`.bgRed.black)
+            } else {
+                if (results.find((i) => i[`Tables_in_appdb (${NAME_TABLE})` === NAME_TABLE])) {
+                    console.log(`таблица ${NAME_TABLE} уже существует`.green)
+                } else {
+                    createPoolMysql.query(`CREATE TABLE ${NAME_TABLE} (Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20));`,
+                        function (err) {
+                            if (err) {
+                                return console.error(`Ошибка создания таблицы: ${NAME_TABLE}. ${err}`.bgRed.black)
+                            } else {
+                                console.log(`таблица '${NAME_TABLE}' создана`.green)
+                            }
+                        })
+                }
+
+            }
+        })
+}
+
+async function findUser(userEmail) {
+    function requestFindUser(email) {
         try {
-            return  createPoolMysql.promise().query(`SELECT * FROM ${NAME_TABLE} WHERE UserEmail = '${email}'`)
-        }catch(e){
-            console.log(e.message.bgRed)
+            return createPoolMysql.promise().query(`SELECT * FROM ${NAME_TABLE} WHERE UserEmail = '${email}'`)
+        } catch (e) {
+            console.log(e.message.bgRed.black)
         }
     }
+
     let response = await requestFindUser(userEmail)
-      return response[0].length
+    return response[0][0]
 
 }
 
 
-function createUser(FirstName, UserEmail, UserPassword ) {
-    createPoolMysql.query(`INSERT INTO users (UserEmail, UserPassword, FirstName)values('${UserEmail}','${UserPassword}','${FirstName}')`,
+function createUser(firstName, userEmail, userPassword) {
+    createPoolMysql.query(
+        `INSERT INTO users (UserEmail, UserPassword, FirstName)values('${userEmail}','${userPassword}','${firstName}')`,
         function (err) {
             if (err) {
-                return console.error(`Ошибка при регистрации пользователя: ${UserEmail}.`.bgRed + err)
+                return console.error(`Ошибка при регистрации пользователя: ${userEmail}. ${err}`.bgRed.black)
             } else {
                 console.log(`пользователь создан `.green)
             }
@@ -95,3 +106,4 @@ function createUser(FirstName, UserEmail, UserPassword ) {
 module.exports.createDataBase = createDataBase
 module.exports.createUser = createUser
 module.exports.findUser = findUser
+module.exports.createTable = createTable

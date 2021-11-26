@@ -14,7 +14,8 @@ const keys = require('../keys/index')
 
 
 dataBase.createDataBase()
-setTimeout(()=>dataBase.findUser('maxkot@gmail.com'),1000)
+
+setTimeout(()=>dataBase.createTable(),1000)
 
 
 let port = normalizePort(process.env.PORT || '3000');
