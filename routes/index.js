@@ -1,3 +1,5 @@
+const dataBase = require('../public/dataBase')
+
 const {Router} = require('express');
 const crypto = require('crypto')
 const router = Router()
@@ -114,16 +116,13 @@ router.get('/getImage', async (req, res) => {
 router.post('/register', async (req, res,) => {
     try {
         const {firstName,userEmail, userPassword} = req.body
-        //const candidate = await User.findOne({email})
+        const candidate = await dataBase.findUser(userEmail)
         if (candidate) {
             console.log('Пользователь найден:' + candidate)
             res.send('Пользователь с таким email уже существует')
         } else {
-            const hashPassword = await bcrypt.hash(password, 10)
-            //const user = new User({name, email, password: hashPassword})
-
-            await user.save()
-            console.log('Пользователь создан:')
+            const hashPassword = await bcrypt.hash(userPassword, 10)
+            const user = dataBase.createUser(name, UserEmail, hashPassword)
             res.send('Пользователь создан')
         }
     } catch (e) {

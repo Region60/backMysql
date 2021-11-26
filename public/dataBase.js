@@ -66,17 +66,21 @@ function createDataBase() {
         })
 }
 
- function findUser(userEmail) {
-    try {
-        return  createPoolMysql.promise().query(`SELECT * FROM ${NAME_TABLE} WHERE UserEmail = '${userEmail}'`)
-
-    }catch(e){
-        console.log(e.message.bgRed)
+  async function findUser(userEmail) {
+    function requestFindUser (email){
+        try {
+            return  createPoolMysql.promise().query(`SELECT * FROM ${NAME_TABLE} WHERE UserEmail = '${email}'`)
+        }catch(e){
+            console.log(e.message.bgRed)
+        }
     }
+    let response = await requestFindUser(userEmail)
+      return response[0].length
+
 }
 
 
-function createUser(UserEmail, UserPassword, FirstName) {
+function createUser(FirstName, UserEmail, UserPassword ) {
     createPoolMysql.query(`INSERT INTO users (UserEmail, UserPassword, FirstName)values('${UserEmail}','${UserPassword}','${FirstName}')`,
         function (err) {
             if (err) {
