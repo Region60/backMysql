@@ -1,7 +1,6 @@
 const dataBase = require('../public/dataBase')
 
 const {Router} = require('express');
-const crypto = require('crypto')
 const router = Router()
 const generateToken = require('../public/generateToken')
 const auth = require('../middleware/auth')
@@ -22,7 +21,7 @@ router.post('/register', async (req, res,) => {
         const candidate = await dataBase.findUser(userEmail)
 
         if (candidate) {
-            console.log('Пользователь найден:' + candidate)
+            console.log(`Пользователь ${candidate.UserEmail} найден` )
             res.send('Пользователь с таким email уже существует')
         } else {
             const hashPassword = await bcrypt.hash(userPassword, 10)
@@ -45,7 +44,7 @@ router.post('/login', async (req, res) => {
         if (!candidate) {
             return res.status(404).json({
                 error: true,
-                message: "Неправильный email или пароль"
+                message: "пользователь с таким электронным адресом не найден"
             })
         }
         bcrypt.compare(userPassword, candidate.UserPassword, function (err, valid) {
@@ -56,9 +55,13 @@ router.post('/login', async (req, res) => {
                 })
             }
         })
-        const token = generateToken(candidate)
+        const token = generateToken.generateAccessToken(candidate)
         res.status(200).json({
-            user: candidate,
+            user:{
+                userEmail:candidate.UserEmail,
+                firstName:candidate.FirstName,
+                levelOfAccess:candidate.LevelOfAccess
+            },
             token
         })
 
@@ -67,7 +70,22 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.post('/loadImage', auth, upload.array('image_save', 30), async function (req, res, next) {
+router.get('/testJwt', auth, async function (req, res) {
+    try {
+        return res.status(201).json({
+            success: true,
+            message: "Its work"
+        })
+    } catch (e) {
+        console.log(e.blue)
+        return res.status(404).json({
+            success: true,
+            message: "Dont work".bgMagenta
+        })
+    }
+})
+
+router.post('/loadImage', auth, upload.array('image_save', 30), async function (req, res) {
     try {
         await req.files.forEach((i) => {
             console.log(i)

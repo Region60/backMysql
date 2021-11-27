@@ -1,6 +1,6 @@
 let mysql = require('mysql2')
-let NAME_DB = 'appdb'
-let NAME_TABLE = 'users'
+const key = require('../keys/index')
+const NAME_TABLE = 'users'
 const colors = require('colors')
 
 
@@ -8,7 +8,7 @@ const createPoolMysql = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'qwerty',
-    database: NAME_DB,
+    database: key.NAME_DATABASE,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -36,12 +36,12 @@ function createDataBase() {
             if (err) {
                 return console.error(`Ошибка при чтении списка баз данных. ${err}`.bgRed.black)
             } else {
-                if (results.find((i) => i.Database === NAME_DB)) {
-                    console.log(`База данных ${NAME_DB} уже создана`.green)
+                if (results.find((i) => i.Database === key.NAME_DATABASE)) {
+                    console.log(`База данных ${key.NAME_DATABASE} уже создана`.green)
                 } else {
-                    connection.promise().query(`CREATE DATABASE ${NAME_DB}`)
+                    connection.promise().query(`CREATE DATABASE ${key.NAME_DATABASE}`)
                         .then(() => {
-                            console.log(`База данных ${NAME_DB} создана`.green);
+                            console.log(`База данных ${key.NAME_DATABASE} создана`.green);
                         })
                         .catch(console.log)
                         .then(() => connection.end())
@@ -53,7 +53,7 @@ function createDataBase() {
 }
 
 function createTable() {
-    createPoolMysql.query(`SHOW TABLES FROM ${NAME_DB} LIKE '${NAME_TABLE}';`,
+    createPoolMysql.query(`SHOW TABLES FROM ${key.NAME_DATABASE} LIKE '${NAME_TABLE}';`,
         function (err, results) {
             if (err) {
                 return console.error(`Ошибка при провеке таблицы ${NAME_TABLE}. ${err}`.bgRed.black)
@@ -61,7 +61,7 @@ function createTable() {
                 if (results.find((i) => i[`Tables_in_appdb (${NAME_TABLE})` === NAME_TABLE])) {
                     console.log(`таблица ${NAME_TABLE} уже существует`.green)
                 } else {
-                    createPoolMysql.query(`CREATE TABLE ${NAME_TABLE} (Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20));`,
+                    createPoolMysql.query(`CREATE TABLE ${NAME_TABLE} (Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20),LevelOfAccess varchar(20));`,
                         function (err) {
                             if (err) {
                                 return console.error(`Ошибка создания таблицы: ${NAME_TABLE}. ${err}`.bgRed.black)
