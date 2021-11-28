@@ -7,15 +7,15 @@ function generateAccessToken(user) {
         email: user.UserEmail,
         _id: user.Id
     }
-    return accessToken = jwt.sign(u, key.JWT_SECRET,{
+    return   jwt.sign(u, key.JWT_SECRET,{
         expiresIn: '1m'
     })
 }
 
 function generateRefreshToken(token) {
 
-    return refreshToken = jwt.sign(token.slice(-10), key.JWT_SECRET,{
-        expiresIn: '4w'
+    return  jwt.sign(token.slice(-10), key.JWT_SECRET,{
+        expiresIn: '12w'
     })
 }
 

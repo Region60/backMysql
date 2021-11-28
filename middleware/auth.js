@@ -1,41 +1,70 @@
+import * as generateToken from "../public/generateToken";
+
 const key = require('../keys/index')
 const jwt = require('jsonwebtoken')
 
 
-function auth(req, res, next) {
-    let token = req.headers['authorization']
-    if (!token) {
-        return res.send('отсутствует токен утентификации')
+function switches (error) {
+    switch (error.name) {
+        case  'TokenExpiredError':
+            return  error.status(401).json({
+                success: false,
+                message: "jwt expired",
+            })
+        case 'JsonWebTokenError':
+            return  error.status(401).json({
+                success: false,
+                message: err.message,
+            })
+        case 'NotBeforeError':
+            return  error.status(401).json({
+                success: false,
+                message: error.message,
+            })
     }
-    token = token.replace('Bearer ', '')
 
-    jwt.verify(token, key.JWT_SECRET, function (err, decoded) {
-        console.log(decoded)
-        if (err) {
-            switch (err.name) {
-                case  'TokenExpiredError':
-                    return  res.status(401).json({
-                        success: false,
-                        message: "jwt expired",
-                    })
-                case 'JsonWebTokenError':
-                    return  res.status(401).json({
-                        success: false,
-                        message: err.message,
-                    })
-                case 'NotBeforeError':
-                    return  res.status(401).json({
-                        success: false,
-                        message: err.message,
-                    })
-            }
-            return res.status(401)
-        } else {
-            next()
-        }
-    })
+
 }
 
+function auth(req, res, next) {
+    let tokens = req.headers['authorization']
+    let accessToken = tokens[0]
+
+    if (!tokens) {
+        return res.send('отсутствует токен утентификации')
+    }
+    if (tokens.length ===1){
+
+        jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
+            if (err) {
+                switches(err)
+                return res.status(401)
+            } else {
+                next()
+            }
+        })
+    }
+    let refreshToken = tokens[1]
+    jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
+        if (err) {
+            switches(err)
+            return res.status(401)
+        }
+    })
+    jwt.verify(refreshToken, tokens[0].slice(-10), function (err, decoded) {
+        if (err) {
+            switches(err)
+            return res.status(401)
+        }
+    })
+return res.status(307).json({
+    tokens:[
+        generateToken.generateAccessToken(),
+        generateToken.generateRefreshToken()
+    ]
+})
+
+}
 
 
 module.exports = auth

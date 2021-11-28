@@ -21,7 +21,7 @@ router.post('/register', async (req, res,) => {
         const candidate = await dataBase.findUser(userEmail)
 
         if (candidate) {
-            console.log(`Пользователь ${candidate.UserEmail} найден` )
+            console.log(`Пользователь ${candidate.UserEmail} найден`)
             res.send('Пользователь с таким email уже существует')
         } else {
             const hashPassword = await bcrypt.hash(userPassword, 10)
@@ -55,14 +55,19 @@ router.post('/login', async (req, res) => {
                 })
             }
         })
-        const token = generateToken.generateAccessToken(candidate)
+
+        const accessToken = generateToken.generateAccessToken(candidate)
+        const refreshToken = generateToken.generateRefreshToken(accessToken)
         res.status(200).json({
-            user:{
-                userEmail:candidate.UserEmail,
-                firstName:candidate.FirstName,
-                levelOfAccess:candidate.LevelOfAccess
+            user: {
+                userEmail: candidate.UserEmail,
+                firstName: candidate.FirstName,
+                levelOfAccess: candidate.LevelOfAccess
             },
-            token
+            tokens: [
+                accessToken,
+                refreshToken
+            ]
         })
 
     } catch (e) {

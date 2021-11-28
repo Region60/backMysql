@@ -20,14 +20,12 @@ function createDataBase() {
         host: 'localhost',
         user: 'root',
         password: 'qwerty',
-
     });
     connection.connect(function (err) {
         if (err) {
             console.error('error connecting: ' + err.stack);
             return;
         }
-
         console.log('connected as id ' + connection.threadId);
     });
 
@@ -45,8 +43,6 @@ function createDataBase() {
                         })
                         .catch(console.log)
                         .then(() => connection.end())
-
-
                 }
             }
         })
@@ -58,7 +54,7 @@ function createTable() {
             if (err) {
                 return console.error(`Ошибка при провеке таблицы ${NAME_TABLE}. ${err}`.bgRed.black)
             } else {
-                if (results.find((i) => i[`Tables_in_appdb (${NAME_TABLE})` === NAME_TABLE])) {
+                if (results.find((i) => i[`Tables_in_appdb (${NAME_TABLE})`] === NAME_TABLE)) {
                     console.log(`таблица ${NAME_TABLE} уже существует`.green)
                 } else {
                     createPoolMysql.query(`CREATE TABLE ${NAME_TABLE} (Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20),LevelOfAccess varchar(20));`,
@@ -70,7 +66,6 @@ function createTable() {
                             }
                         })
                 }
-
             }
         })
 }
