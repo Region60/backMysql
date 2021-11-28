@@ -1,23 +1,27 @@
-import * as generateToken from "../public/generateToken";
+const generateToken = require('../public/generateToken')
 
 const key = require('../keys/index')
 const jwt = require('jsonwebtoken')
 
 
-function switches (error) {
+function switches(error, response) {
+console.log(response)
     switch (error.name) {
         case  'TokenExpiredError':
-            return  error.status(401).json({
+            console.log('TokenExpiredError')
+            return response.status(401).json({
                 success: false,
                 message: "jwt expired",
             })
         case 'JsonWebTokenError':
-            return  error.status(401).json({
+            console.log('JsonWebTokenError')
+            return response.status(401).json({
                 success: false,
-                message: err.message,
+                message: error.message,
             })
         case 'NotBeforeError':
-            return  error.status(401).json({
+            console.log('NotBeforeError')
+            return response.status(401).json({
                 success: false,
                 message: error.message,
             })
@@ -27,42 +31,48 @@ function switches (error) {
 }
 
 function auth(req, res, next) {
-    let tokens = req.headers['authorization']
-    let accessToken = tokens[0]
+    try {
+        let tokens = req.headers['authorization'].split(',')
+        console.log(typeof tokens)
+        let accessToken = tokens[0]
 
-    if (!tokens) {
-        return res.send('отсутствует токен утентификации')
-    }
-    if (tokens.length ===1){
-
-        jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
-            if (err) {
-                switches(err)
-                return res.status(401)
-            } else {
-                next()
-            }
-        })
-    }
-    let refreshToken = tokens[1]
-    jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
-        if (err) {
-            switches(err)
-            return res.status(401)
+        if (!tokens) {
+            return res.send('отсутствует токен утентификации')
         }
-    })
-    jwt.verify(refreshToken, tokens[0].slice(-10), function (err, decoded) {
-        if (err) {
-            switches(err)
-            return res.status(401)
+        if (tokens.length === 1) {
+            jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
+                if (err) {
+                    switches(err, res)
+                    return res.status(401)
+                } else {
+                    next()
+                }
+            })
+        } else {
+            console.log('2  token')
+            let refreshToken = tokens[1]
+            jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
+                if (err) {
+                    switches(err, res)
+                    return res.status(401)
+                }
+            })
+            jwt.verify(refreshToken, tokens[0].slice(-10), function (err, decoded) {
+                if (err) {
+                    switches(err, res)
+                    return res.status(401)
+                }
+            })
+            return res.status(307).json({
+                tokens: [
+                    generateToken.generateAccessToken(),
+                    generateToken.generateRefreshToken()
+                ]
+            })
         }
-    })
-return res.status(307).json({
-    tokens:[
-        generateToken.generateAccessToken(),
-        generateToken.generateRefreshToken()
-    ]
-})
+    } catch (e) {
+        console.log(e)
+    }
 
 }
 
