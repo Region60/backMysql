@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken')
 
 
 function switches(error, response) {
-console.log(response)
     switch (error.name) {
         case  'TokenExpiredError':
             console.log('TokenExpiredError')
@@ -26,14 +25,11 @@ console.log(response)
                 message: error.message,
             })
     }
-
-
 }
 
 function auth(req, res, next) {
     try {
         let tokens = req.headers['authorization'].split(',')
-        console.log(typeof tokens)
         let accessToken = tokens[0]
         let payload
 

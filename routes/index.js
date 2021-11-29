@@ -40,7 +40,8 @@ router.post('/register', async (req, res,) => {
 
         }
     } catch (e) {
-        console.log(e)
+        console.error((e.message).bgRed.black)
+
     }
 })
 
@@ -48,7 +49,6 @@ router.post('/login', async (req, res) => {
     try {
         const {userEmail, userPassword} = req.body
         const candidate = await dataBase.findUser(userEmail)
-        //console.log(candidate)
         if (!candidate) {
             return res.status(404).json({
                 error: true,
