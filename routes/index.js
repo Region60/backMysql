@@ -25,11 +25,19 @@ router.post('/register', async (req, res,) => {
             res.send('Пользователь с таким email уже существует')
         } else {
             const hashPassword = await bcrypt.hash(userPassword, 10)
-            dataBase.createUser(firstName, userEmail, hashPassword)
-            return res.status(200).json({
-                success: true,
-                message: "Ползователь создан"
-            })
+            let response= await dataBase.createUser(firstName, userEmail, hashPassword)
+            if (response) {
+                return res.status(200).json({
+                    success: true,
+                    message: "Ползователь создан"
+                })
+            }else {
+                return res.status(400).json({
+                    success: false,
+                    message: "ошибка при создании пользователя"
+                })
+            }
+
         }
     } catch (e) {
         console.log(e)

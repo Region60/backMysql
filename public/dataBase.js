@@ -75,7 +75,7 @@ async function findUser(userEmail) {
         try {
             return createPoolMysql.promise().query(`SELECT * FROM ${NAME_TABLE} WHERE UserEmail = '${email}'`)
         } catch (e) {
-            console.log(e.message.bgRed.black)
+            console.error(e.message.bgRed.black)
         }
     }
 
@@ -85,16 +85,16 @@ async function findUser(userEmail) {
 }
 
 
-function createUser(firstName, userEmail, userPassword) {
-    createPoolMysql.query(
-        `INSERT INTO users (UserEmail, UserPassword, FirstName)values('${userEmail}','${userPassword}','${firstName}')`,
-        function (err) {
-            if (err) {
-                return console.error(`Ошибка при регистрации пользователя: ${userEmail}. ${err}`.bgRed.black)
-            } else {
-                console.log(`пользователь создан `.green)
-            }
-        })
+async function createUser(firstName, userEmail, userPassword) {
+    function requestCreateUser(name, email, password){
+    try {
+        return createPoolMysql.promise().query(
+            `INSERT INTO users (UserEmail, UserPassword, FirstName)values('${email}','${password}','${name}')`)
+    } catch (e) {
+        console.error(`Ошибка при регистрации пользователя: ${email}. ${e.message.bgRed.black}`)
+    }}
+    let response = await requestCreateUser(firstName, userEmail, userPassword)
+    return response[0]
 }
 
 
