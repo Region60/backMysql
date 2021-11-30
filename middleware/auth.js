@@ -37,48 +37,40 @@ function auth(req, res, next) {
         }
         if (tokens.length === 1) {
             jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
-                console.log(payload)
                 if (err) {
                     switches(err, res)
-                    return res.status(401)
                 } else {
                     next()
                 }
             })
         } else {
-            console.log('>>>>>>>>>>>2  token')
             let refreshToken = tokens[1]
             let payload
-            jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
-                payload = decoded
+            let {name, email, _id} = jwt.decode(accessToken)
+            payload = {
+                name: name,
+                email: email,
+                _id: _id
+            }
+            jwt.verify(refreshToken, key.JWT_SECRET, function (err, decoded) {
                 if (err) {
+                    console.log(err)
                     switches(err, res)
-                    return res.status(401)
-                }else {
-                    jwt.verify(refreshToken, accessToken.slice(-10), function (err, decoded) {
-                        if (err) {
-                            switches(err, res)
-                            return res.status(401)
-                        }else{
-                            let newAccesToken = generateToken.generateAccessToken(payload)
-                            let newRefreshToken =generateToken.generateRefreshToken(newAccesToken.slice(-10))
-                            return res.status(307).json({
-                                tokens: [
-                                    newAccesToken,
-                                    newRefreshToken
-                                ]
-                            })
-                        }
+                } else {
+                    let newAccessToken = generateToken.generateAccessToken(payload)
+                    let newRefreshToken = generateToken.generateRefreshToken(newAccessToken.slice(-10))
+                    return res.status(307).json({
+                        tokens: [
+                            newAccessToken,
+                            newRefreshToken
+                        ]
                     })
                 }
             })
-
-
         }
     } catch (e) {
         console.log(e)
     }
-
 }
 
 
