@@ -31,14 +31,12 @@ function auth(req, res, next) {
     try {
         let tokens = req.headers['authorization'].split(',')
         let accessToken = tokens[0]
-        let payload
 
         if (!tokens) {
             return res.send('отсутствует токен утентификации')
         }
         if (tokens.length === 1) {
             jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
-                payload = decoded
                 console.log(payload)
                 if (err) {
                     switches(err, res)
@@ -48,22 +46,26 @@ function auth(req, res, next) {
                 }
             })
         } else {
-            console.log('2  token')
+            console.log('>>>>>>>>>>>2  token')
             let refreshToken = tokens[1]
+            let payload
             jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
+                payload = decoded
                 if (err) {
                     switches(err, res)
                     return res.status(401)
                 }else {
-                    jwt.verify(refreshToken, tokens[0].slice(-10), function (err, decoded) {
+                    jwt.verify(refreshToken, accessToken.slice(-10), function (err, decoded) {
                         if (err) {
                             switches(err, res)
                             return res.status(401)
                         }else{
+                            let newAccesToken = generateToken.generateAccessToken(payload)
+                            let newRefreshToken =generateToken.generateRefreshToken(newAccesToken.slice(-10))
                             return res.status(307).json({
                                 tokens: [
-                                    generateToken.generateAccessToken(),
-                                    generateToken.generateRefreshToken()
+                                    newAccesToken,
+                                    newRefreshToken
                                 ]
                             })
                         }
