@@ -1,8 +1,8 @@
 let mysql = require('mysql2')
 const key = require('../keys/index')
 const NAME_TABLE = 'users'
+const queryCreatTableUsers = 'Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20),LevelOfAccess varchar(20)'
 const colors = require('colors')
-
 
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
@@ -46,18 +46,19 @@ function createDataBase() {
                 }
             }
         })
+    createTable(queryCreatTableUsers)
 }
 
-function createTable() {
+function createTable(paramsTable) {
     createPoolMysql.query(`SHOW TABLES FROM ${key.NAME_DATABASE} LIKE '${NAME_TABLE}';`,
         function (err, results) {
             if (err) {
                 return console.error(`Ошибка при провеке таблицы ${NAME_TABLE}. ${err}`.bgRed.black)
             } else {
-                if (results.find((i) => i[`Tables_in_appdb (${NAME_TABLE})`] === NAME_TABLE)) {
+                if (results.find((i) => i[`Tables_in_${key.NAME_DATABASE} (${NAME_TABLE})`] === NAME_TABLE)) {
                     console.log(`таблица ${NAME_TABLE} уже существует`.green)
                 } else {
-                    createPoolMysql.query(`CREATE TABLE ${NAME_TABLE} (Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20),LevelOfAccess varchar(20));`,
+                    createPoolMysql.query(`CREATE TABLE ${NAME_TABLE} (${paramsTable});`,
                         function (err) {
                             if (err) {
                                 return console.error(`Ошибка создания таблицы: ${NAME_TABLE}. ${err}`.bgRed.black)
