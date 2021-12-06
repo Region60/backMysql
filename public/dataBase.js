@@ -3,14 +3,15 @@ const key = require('../keys/index')
 const NAME_TABLE = 'users'
 const colors = require('colors')
 
+//вынести dataBaseConfig в key
 const dataBaseConfig = {
     name: 'appdb',
-    password: 'qwqerty',
+    password: 'qwerty',
     tables: [
         {
-        name: 'users',
-        query: 'Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20),LevelOfAccess varchar(20)'
-    },
+            name: 'users',
+            query: 'Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20),LevelOfAccess varchar(20)'
+        },
         {
             name: 'images',
             query: 'Id int primary key auto_increment, Path varchar(50), FileName(50)'
@@ -19,14 +20,7 @@ const dataBaseConfig = {
 
 }
 
-[{name:'NAME',
-primaryKey:true
-}]
 
-function createComandQuery (objWidh) {
-
-
-}
 
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
@@ -39,7 +33,7 @@ const createPoolMysql = mysql.createPool({
 })
 
 
-function createDataBase() {
+function createDataBase(nameDataBase) {
     const connection = mysql.createConnection({
         host: 'localhost',
         user: 'root',
@@ -58,21 +52,21 @@ function createDataBase() {
             if (err) {
                 return console.error(`Ошибка при чтении списка баз данных. ${err}`.bgRed.black)
             } else {
-                if (results.find((i) => i.Database === key.database.NAME_DATABASE)) {
-                    console.log(`База данных ${key.NAME_DATABASE} уже создана`.green)
+                if (results.find((i) => i.Database === nameDataBase)) {
+                    console.log(`База данных ${nameDataBase} уже создана`.green)
                 } else {
-                    connection.promise().query(`CREATE DATABASE ${key.database.NAME_DATABASE}`)
+                    connection.promise().query(`CREATE DATABASE ${nameDataBaseE}`)
                         .then(() => {
-                            console.log(`База данных ${key.database.NAME_DATABASE} создана`.green);
+                            console.log(`База данных ${nameDataBase} создана`.green);
                         })
                         .catch(console.log)
                         .then(() => connection.end())
                 }
             }
         })
-dataBaseConfig.tables.forEach((i)=>{
-    createTable(i.query,i.name,dataBaseConfig.name)
-})
+    dataBaseConfig.tables.forEach((i) => {
+        createTable(i.query, i.name, dataBaseConfig.name)
+    })
 }
 
 function createTable(queryMysql, nameTable, nameDataBase) {
@@ -100,7 +94,7 @@ function createTable(queryMysql, nameTable, nameDataBase) {
 async function findUser(userEmail) {
     function requestFindUser(email) {
         try {
-            return createPoolMysql.promise().query(`SELECT * FROM ${NAME_TABLE} WHERE UserEmail = '${email}'`)
+            return createPoolMysql.promise().query(`SELECT * FROM users WHERE UserEmail = '${email}'`)
         } catch (e) {
             console.error(e.message.bgRed.black)
         }
@@ -131,3 +125,4 @@ module.exports.createDataBase = createDataBase
 module.exports.createUser = createUser
 module.exports.findUser = findUser
 module.exports.createTable = createTable
+module.exports.dataBaseConfig = dataBaseConfig

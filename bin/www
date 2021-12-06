@@ -13,7 +13,7 @@ let http = require('http')
 const keys = require('../keys/index')
 
 
-dataBase.createDataBase()
+dataBase.createDataBase(dataBase.dataBaseConfig.name)
 
 
 
