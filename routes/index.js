@@ -1,4 +1,4 @@
-const dataBase = require('../public/dataBase')
+const dataBase = require('../public/dataBase.js')
 
 const {Router} = require('express');
 const router = Router()

@@ -6,7 +6,7 @@
 /**
  * Module dependencies.
  */
-let dataBase = require("../public/dataBase")
+let dataBase = require('../public/dataBase.js')
 let app = require('../app')
 let debug = require('debug')('backproject:server')
 let http = require('http')
@@ -15,7 +15,6 @@ const keys = require('../keys/index')
 
 dataBase.createDataBase()
 
-setTimeout(()=>dataBase.createTable(),1000)
 
 
 let port = normalizePort(process.env.PORT || '3000');
