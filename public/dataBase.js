@@ -1,6 +1,4 @@
 let mysql = require('mysql2')
-const key = require('../keys/index')
-const NAME_TABLE = 'users'
 const colors = require('colors')
 
 //вынести dataBaseConfig в key
@@ -17,7 +15,6 @@ const dataBaseConfig = {
             query: 'Id int primary key auto_increment, Path varchar(50), FileName(50)'
         }
     ]
-
 }
 
 
@@ -25,8 +22,8 @@ const dataBaseConfig = {
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: key.database.PASSWORD,
-    database: key.database.NAME_DATABASE,
+    password: dataBaseConfig.password,
+    database:dataBaseConfig.name,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -37,7 +34,7 @@ function createDataBase(nameDataBase) {
     const connection = mysql.createConnection({
         host: 'localhost',
         user: 'root',
-        password: 'qwerty',
+        password: dataBaseConfig.password,
     });
     connection.connect(function (err) {
         if (err) {
@@ -92,31 +89,31 @@ function createTable(queryMysql, nameTable, nameDataBase) {
 }
 
 async function findUser(userEmail) {
-    function requestFindUser(email) {
+    function requestFindUser() {
         try {
-            return createPoolMysql.promise().query(`SELECT * FROM users WHERE UserEmail = '${email}'`)
+            return createPoolMysql.promise().query(`SELECT * FROM users WHERE UserEmail = '${userEmail}'`)
         } catch (e) {
             console.error(e.message.bgRed.black)
         }
     }
 
-    let response = await requestFindUser(userEmail)
+    let response = await requestFindUser()
     return response[0][0]
 
 }
 
 
 async function createUser(firstName, userEmail, userPassword) {
-    function requestCreateUser(name, email, password) {
+    function requestCreateUser() {
         try {
             return createPoolMysql.promise().query(
-                `INSERT INTO users (UserEmail, UserPassword, FirstName)values('${email}','${password}','${name}')`)
+                `INSERT INTO users (UserEmail, UserPassword, FirstName)values('${userEmail}','${userPassword}','${firstName}')`)
         } catch (e) {
-            console.error(`Ошибка при регистрации пользователя: ${email}. ${e.message.bgRed.black}`)
+            console.error(`Ошибка при регистрации пользователя: ${userEmail}. ${e.message.bgRed.black}`)
         }
     }
 
-    let response = await requestCreateUser(firstName, userEmail, userPassword)
+    let response = await requestCreateUser()
     return response[0]
 }
 
