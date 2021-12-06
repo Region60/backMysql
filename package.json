@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "colors": "^1.4.0",
-    "i": "^0.3.7"
+    "i": "^0.3.7",
+    "typescript": "^4.5.2"
   }
 }
