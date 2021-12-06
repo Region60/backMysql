@@ -19,6 +19,15 @@ const dataBaseConfig = {
 
 }
 
+[{name:'NAME',
+primaryKey:true
+}]
+
+function createComandQuery (objWidh) {
+
+
+}
+
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
     user: 'root',
