@@ -12,18 +12,17 @@ const dataBaseConfig = {
         },
         {
             name: 'images',
-            query: 'Id int primary key auto_increment, Path varchar(50), FileName(50)'
+            query: 'Id int primary key auto_increment, Path varchar(50), FileName varchar(50), OriginalName varchar(50)'
         }
     ]
 }
-
 
 
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: dataBaseConfig.password,
-    database:dataBaseConfig.name,
+    database: dataBaseConfig.name,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -117,9 +116,24 @@ async function createUser(firstName, userEmail, userPassword) {
     return response[0]
 }
 
+async function addImages(originalName, path, filename) {
+    function requestAddImages() {
+        try {
+            return createPoolMysql.promise().query(
+                `INSERT INTO images(Path, FileName, OriginalName)VALUES('${originalName}','${path}','${filename}')`)
+        } catch (e) {
+            console.error(`Ошибка при добавлении изображения: ${originalName}`)
+        }
+    }
+
+    let response = await requestAddImages()
+    console.log(response)
+}
+
 
 module.exports.createDataBase = createDataBase
 module.exports.createUser = createUser
 module.exports.findUser = findUser
 module.exports.createTable = createTable
 module.exports.dataBaseConfig = dataBaseConfig
+module.exports.addImages = addImages

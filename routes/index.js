@@ -102,9 +102,8 @@ router.post('/loadImage', auth, upload.array('image_save', 30), async function (
     try {
         await req.files.forEach((i) => {
             console.log(i)
-            const {originalname, path, filename,} = i
-            //const newImage = new Image({originalname, path, filename})
-            newImage.save()
+            const {originalname, path, filename} = i
+           dataBase.addImages(originalname, path, filename)
         })
         return res.status(201).json({
             success: true,
