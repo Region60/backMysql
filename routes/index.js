@@ -161,6 +161,7 @@ router.get('/getImage', async (req, res) => {
             return res.status(200)
                 .send(result)
         })*/
+        console.log('log')
     } catch (e) {
         console.log(e)
     }
