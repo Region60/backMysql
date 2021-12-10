@@ -17,8 +17,6 @@ const dataBaseConfig = {
     ]
 }
 
-
-
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
     user: 'root',
@@ -88,7 +86,7 @@ function createTable(queryMysql, nameTable, nameDataBase) {
         })
 }
 
-async function findUser(userEmail) {
+/*async function findUser(userEmail) {
     function requestFindUser() {
         try {
             return createPoolMysql.promise().query(`SELECT * FROM users WHERE UserEmail = '${userEmail}'`)
@@ -96,14 +94,11 @@ async function findUser(userEmail) {
             console.error(e.message.bgRed.black)
         }
     }
-
     let response = await requestFindUser()
     return response[0][0]
+}*/
 
-}
-
-
-async function createUser(firstName, userEmail, userPassword) {
+/*async function createUser(firstName, userEmail, userPassword) {
     function requestCreateUser() {
         try {
             return createPoolMysql.promise().query(
@@ -115,7 +110,7 @@ async function createUser(firstName, userEmail, userPassword) {
 
     let response = await requestCreateUser()
     return response[0]
-}
+}*/
 
 
 module.exports.createDataBase = createDataBase

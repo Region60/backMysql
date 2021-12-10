@@ -6,7 +6,7 @@
 /**
  * Module dependencies.
  */
-let dataBase = require('../public/dataBase.js')
+let dataBase = require('../services/dataBase/dataBase.js')
 let app = require('../app')
 let debug = require('debug')('backproject:server')
 let http = require('http')
