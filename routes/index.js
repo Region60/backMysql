@@ -1,4 +1,4 @@
-const dataBase = require('../services/dataBase/dataBase.js')
+const users = require('../services/dataBase/users')
 
 const {Router} = require('express');
 const router = Router()
@@ -19,14 +19,14 @@ router.get('/', (req, res, next) => {
 router.post('/register', async (req, res,) => {
     try {
         const {firstName, userEmail, userPassword} = req.body
-        const candidate = await dataBase.findUser(userEmail)
+        const candidate = await users.findUser(userEmail)
 
         if (candidate) {
             console.log(`Пользователь ${candidate.UserEmail} найден`)
             res.send('Пользователь с таким email уже существует')
         } else {
             const hashPassword = await bcrypt.hash(userPassword, 10)
-            let response= await dataBase.createUser(firstName, userEmail, hashPassword)
+            let response= await users.createUser(firstName, userEmail, hashPassword)
             if (response) {
                 return res.status(200).json({
                     success: true,

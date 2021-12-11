@@ -4,24 +4,24 @@ const colors = require('colors')
 //вынести dataBaseConfig в key
 const dataBaseConfig = {
     name: 'appdb',
-    password: 'qwertyui',
-    tables: [
-        {
+    password: 'qwerty',
+    tables: {
+        users: {
             name: 'users',
             query: 'Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20),LevelOfAccess varchar(20)'
         },
-        {
+        images: {
             name: 'images',
             query: 'Id int primary key auto_increment, Path varchar(50), FileName varchar(50)'
         }
-    ]
+    }
 }
 
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: dataBaseConfig.password,
-    database:dataBaseConfig.name,
+    database: dataBaseConfig.name,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -59,9 +59,13 @@ function createDataBase(nameDataBase) {
                 }
             }
         })
-    dataBaseConfig.tables.forEach((i) => {
+    /*dataBaseConfig.tables.forEach((i) => {
         createTable(i.query, i.name, dataBaseConfig.name)
-    })
+    })*/
+    for (key in dataBaseConfig.tables){
+        console.log(dataBaseConfig.tables[key].name)
+        createTable(dataBaseConfig.tables[key].query, dataBaseConfig.tables[key].name, dataBaseConfig.name)
+    }
 }
 
 function createTable(queryMysql, nameTable, nameDataBase) {
@@ -86,17 +90,18 @@ function createTable(queryMysql, nameTable, nameDataBase) {
         })
 }
 
-/*async function findUser(userEmail) {
+async function dataBaseSearch(table, column, value) {
     function requestFindUser() {
         try {
-            return createPoolMysql.promise().query(`SELECT * FROM users WHERE UserEmail = '${userEmail}'`)
+            return createPoolMysql.promise().query(`SELECT * FROM ${table} WHERE ${column} = '${value}'`)
         } catch (e) {
             console.error(e.message.bgRed.black)
         }
     }
+
     let response = await requestFindUser()
     return response[0][0]
-}*/
+}
 
 /*async function createUser(firstName, userEmail, userPassword) {
     function requestCreateUser() {
@@ -114,7 +119,6 @@ function createTable(queryMysql, nameTable, nameDataBase) {
 
 
 module.exports.createDataBase = createDataBase
-module.exports.createUser = createUser
-module.exports.findUser = findUser
+module.exports.dataBaseSearch = dataBaseSearch
 module.exports.createTable = createTable
 module.exports.dataBaseConfig = dataBaseConfig
