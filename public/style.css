@@ -3,9 +3,11 @@ body {
     flex-direction: column;
     justify-content: space-between;
 }
+
 .navbar .brand-logo {
     margin-left: 1vw;
 }
+
 .navbar__link-swagger {
     margin-right: 1vw;
 }

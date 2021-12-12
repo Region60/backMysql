@@ -8,7 +8,7 @@ function generateAccessToken(user) {
         _id: user.Id
     }
     return   jwt.sign(u, key.JWT_SECRET,{
-        expiresIn: '30s'
+        expiresIn: '1h'
     })
 }
 

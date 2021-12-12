@@ -8,14 +8,15 @@ const dataBaseConfig = {
     tables: {
         users: {
             name: 'users',
-            query: 'Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20),LevelOfAccess varchar(20)'
+            queryCreatTable: 'Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20),LevelOfAccess varchar(20)'
         },
         images: {
             name: 'images',
-            query: 'Id int primary key auto_increment, Path varchar(50), FileName varchar(50)'
+            queryCreatTable: 'Id int primary key auto_increment, Path varchar(50), FileName varchar(50)'
         }
     }
 }
+
 
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
@@ -62,9 +63,8 @@ function createDataBase(nameDataBase) {
     /*dataBaseConfig.tables.forEach((i) => {
         createTable(i.query, i.name, dataBaseConfig.name)
     })*/
-    for (key in dataBaseConfig.tables){
-        console.log(dataBaseConfig.tables[key].name)
-        createTable(dataBaseConfig.tables[key].query, dataBaseConfig.tables[key].name, dataBaseConfig.name)
+    for (key in dataBaseConfig.tables) {
+        createTable(dataBaseConfig.tables[key].queryCreatTable, dataBaseConfig.tables[key].name, dataBaseConfig.name)
     }
 }
 
@@ -103,11 +103,11 @@ async function dataBaseSearch(table, column, value) {
     return response[0][0]
 }
 
-/*async function createUser(firstName, userEmail, userPassword) {
+async function addItemForTable(partQuery) {
     function requestCreateUser() {
         try {
             return createPoolMysql.promise().query(
-                `INSERT INTO users (UserEmail, UserPassword, FirstName)values('${userEmail}','${userPassword}','${firstName}')`)
+                `INSERT INTO ${partQuery}`)
         } catch (e) {
             console.error(`Ошибка при регистрации пользователя: ${userEmail}. ${e.message.bgRed.black}`)
         }
@@ -115,10 +115,11 @@ async function dataBaseSearch(table, column, value) {
 
     let response = await requestCreateUser()
     return response[0]
-}*/
+}
 
 
 module.exports.createDataBase = createDataBase
 module.exports.dataBaseSearch = dataBaseSearch
 module.exports.createTable = createTable
+module.exports.addItemForTable = addItemForTable
 module.exports.dataBaseConfig = dataBaseConfig

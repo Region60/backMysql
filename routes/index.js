@@ -1,4 +1,5 @@
 const users = require('../services/dataBase/users')
+const images = require('../services/dataBase/images')
 
 const {Router} = require('express');
 const router = Router()
@@ -10,7 +11,6 @@ const multer = require("multer")
 const upload = multer({dest: 'uploads/'})
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('../public/swagger.json')
-/* GET home page. */
 
 router.get('/', (req, res, next) => {
     res.render('index', {title: 'BackEnd'});
@@ -26,13 +26,13 @@ router.post('/register', async (req, res,) => {
             res.send('Пользователь с таким email уже существует')
         } else {
             const hashPassword = await bcrypt.hash(userPassword, 10)
-            let response= await users.createUser(firstName, userEmail, hashPassword)
+            let response = await users.createUser(firstName, userEmail, hashPassword)
             if (response) {
                 return res.status(200).json({
                     success: true,
                     message: "Ползователь создан"
                 })
-            }else {
+            } else {
                 return res.status(400).json({
                     success: false,
                     message: "ошибка при создании пользователя"
@@ -49,7 +49,7 @@ router.post('/register', async (req, res,) => {
 router.post('/login', async (req, res) => {
     try {
         const {userEmail, userPassword} = req.body
-        const candidate = await dataBase.findUser(userEmail)
+        const candidate = await users.findUser(userEmail)
         if (!candidate) {
             return res.status(404).json({
                 error: true,
@@ -102,9 +102,9 @@ router.get('/testJwt', auth, async function (req, res) {
 router.post('/loadImage', auth, upload.array('image_save', 30), async function (req, res) {
     try {
         await req.files.forEach((i) => {
-            console.log(i)
-            const {originalname, path, filename} = i
-           dataBase.addImages(originalname, path, filename)
+            console.log(i.destination)
+            const {path, filename} = i
+            images.addImage(path, filename)
         })
         return res.status(201).json({
             success: true,
@@ -113,7 +113,7 @@ router.post('/loadImage', auth, upload.array('image_save', 30), async function (
     } catch (e) {
         console.log(e)
         return res.status(404).json({
-            success: true,
+            success: false,
             message: "Ошибка загрузки файлов"
         })
     }
@@ -147,22 +147,9 @@ router.delete('/deleteImage', auth, async (req, res) => {
 router.get('/getImage', async (req, res) => {
 
     try {
-        console.log(req.body)
-        const options = {
-            page: req.body.page,
-            limit: req.body.quanity,
-            collation: {
-                locale: 'en',
-            },
-        };
-        /*Image.paginate({}, options, (err, result) => {
-            if (err) {
-                console.log(err)
-            }
-            return res.status(200)
-                .send(result)
-        })*/
-        console.log('log')
+       let image = await images.findImage(req.body.name)
+        return res.status(200)
+            .send(image)
     } catch (e) {
         console.log(e)
     }

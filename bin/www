@@ -6,10 +6,10 @@
 /**
  * Module dependencies.
  */
-let dataBase = require('../services/dataBase/dataBase.js')
-let app = require('../app')
-let debug = require('debug')('backproject:server')
-let http = require('http')
+const dataBase = require('../services/dataBase/dataBase.js')
+const app = require('../app')
+const debug = require('debug')('backproject:server')
+const http = require('http')
 const keys = require('../keys/index')
 
 
@@ -17,7 +17,7 @@ dataBase.createDataBase(dataBase.dataBaseConfig.name)
 
 
 
-let port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**

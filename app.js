@@ -3,9 +3,9 @@ const express = require('express');
 const exphbs = require('express-handlebars')
 const path = require('path');
 const logger = require('morgan');
-const swaggerUi =  require('swagger-ui-express')
-const helmet =  require('helmet')
-const compression =  require('compression')
+const swaggerUi = require('swagger-ui-express')
+const helmet = require('helmet')
+const compression = require('compression')
 
 const indexRouter = require('./routes/index');
 
