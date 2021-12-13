@@ -6,14 +6,17 @@
 /**
  * Module dependencies.
  */
-const dataBase = require('../services/dataBase/dataBase.js')
+const {configApp} = require('../configApp/configApp')
+const dataBase = require('../services/dataBase/dataBase')
 const app = require('../app')
 const debug = require('debug')('backproject:server')
 const http = require('http')
 const keys = require('../keys/index')
+const appConfig = ('../configApp/configApp')
+console.log(appConfig)
 
 
-dataBase.createDataBase(dataBase.dataBaseConfig.name)
+dataBase.createDataBase(configApp.dataBaseConfig.name)
 
 
 

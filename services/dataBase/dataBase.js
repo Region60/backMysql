@@ -1,28 +1,13 @@
-let mysql = require('mysql2')
+const mysql = require('mysql2')
 const colors = require('colors')
-
-//вынести dataBaseConfig в key
-const dataBaseConfig = {
-    name: 'appdb',
-    password: 'qwerty',
-    tables: {
-        users: {
-            name: 'users',
-            queryCreatTable: 'Id int primary key auto_increment,UserEmail varchar(60),UserPassword varchar(100),FirstName varchar(20),LevelOfAccess varchar(20)'
-        },
-        images: {
-            name: 'images',
-            queryCreatTable: 'Id int primary key auto_increment, Path varchar(50), FileName varchar(50)'
-        }
-    }
-}
+const {configApp} = require('../../configApp/configApp')
 
 
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: dataBaseConfig.password,
-    database: dataBaseConfig.name,
+    password: configApp.dataBaseConfig.password,
+    database: configApp.dataBaseConfig.name,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -33,7 +18,7 @@ function createDataBase(nameDataBase) {
     const connection = mysql.createConnection({
         host: 'localhost',
         user: 'root',
-        password: dataBaseConfig.password,
+        password: configApp.dataBaseConfig.password,
     });
     connection.connect(function (err) {
         if (err) {
@@ -63,8 +48,8 @@ function createDataBase(nameDataBase) {
     /*dataBaseConfig.tables.forEach((i) => {
         createTable(i.query, i.name, dataBaseConfig.name)
     })*/
-    for (key in dataBaseConfig.tables) {
-        createTable(dataBaseConfig.tables[key].queryCreatTable, dataBaseConfig.tables[key].name, dataBaseConfig.name)
+    for (key in configApp.dataBaseConfig.tables) {
+        createTable(configApp.dataBaseConfig.tables[key].queryCreatTable, configApp.dataBaseConfig.tables[key].name, configApp.dataBaseConfig.name)
     }
 }
 
@@ -122,4 +107,3 @@ module.exports.createDataBase = createDataBase
 module.exports.dataBaseSearch = dataBaseSearch
 module.exports.createTable = createTable
 module.exports.addItemForTable = addItemForTable
-module.exports.dataBaseConfig = dataBaseConfig

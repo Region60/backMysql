@@ -1,5 +1,6 @@
 const users = require('../services/dataBase/users')
 const images = require('../services/dataBase/images')
+const configApp = require('../configApp/configApp')
 
 const {Router} = require('express');
 const router = Router()
@@ -8,7 +9,7 @@ const auth = require('../middleware/auth')
 const fs = require('fs')
 const bcrypt = require('bcryptjs')
 const multer = require("multer")
-const upload = multer({dest: 'uploads/'})
+const upload = multer({dest: configApp.dirSaveImage})
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('../public/swagger.json')
 
@@ -149,7 +150,7 @@ router.get('/getImage', async (req, res) => {
     try {
        let image = await images.findImage(req.body.name)
         return res.status(200)
-            .send(image)
+            .send(req.body.name)
     } catch (e) {
         console.log(e)
     }
