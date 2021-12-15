@@ -9,7 +9,7 @@ const auth = require('../middleware/auth')
 const fs = require('fs')
 const bcrypt = require('bcryptjs')
 const multer = require("multer")
-const upload = multer({dest: configApp.dirSaveImage})
+const upload = multer({dest: configApp.configApp.dirSaveImages})
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('../public/swagger.json')
 
@@ -103,7 +103,7 @@ router.get('/testJwt', auth, async function (req, res) {
 router.post('/loadImage', auth, upload.array('image_save', 30), async function (req, res) {
     try {
         await req.files.forEach((i) => {
-            console.log(i.destination)
+            console.log(i)
             const {path, filename} = i
             images.addImage(path, filename)
         })
@@ -146,11 +146,10 @@ router.delete('/deleteImage', auth, async (req, res) => {
 })
 
 router.get('/getImage', async (req, res) => {
-
     try {
        let image = await images.findImage(req.body.name)
         return res.status(200)
-            .send(req.body.name)
+            .send(image)
     } catch (e) {
         console.log(e)
     }

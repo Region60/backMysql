@@ -13,7 +13,7 @@ const configApp = {
             }
         }
     },
-    dirSaveImages: '/uploads'
+    dirSaveImages: 'uploads/'
 }
 
 

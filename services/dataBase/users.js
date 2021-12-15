@@ -1,8 +1,10 @@
 const dataBase = require('./dataBase')
+const {configApp} = require('../../configApp/configApp')
+
 
 
 async function findUser(userEmail) {
-    return await dataBase.dataBaseSearch(dataBase.dataBaseConfig.tables.users.name, 'UserEmail', userEmail)
+    return await dataBase.dataBaseSearch(configApp.dataBaseConfig.tables.users.name, 'UserEmail', userEmail)
 }
 
 async function createUser(firstName, userEmail, userPassword) {

@@ -1,7 +1,9 @@
 const dataBase = require('./dataBase')
+const {configApp} = require('../../configApp/configApp')
+
 
 async function findImage(filename) {
-    return await dataBase.dataBaseSearch(dataBase.dataBaseConfig.tables.images.name, 'FileName', filename)
+    return await dataBase.dataBaseSearch(configApp.dataBaseConfig.tables.images.name, 'FileName', filename)
 
 }
 
