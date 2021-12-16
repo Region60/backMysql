@@ -123,12 +123,11 @@ router.post('/loadImage', auth, upload.array('image_save', 30), async function (
 router.delete('/deleteImage', auth, async (req, res) => {
     try {
         for (const item of req.body) {
-            //const image = await Image.findOne({filename: item})
+            const image = await images.findImage(item)
             await fs.unlink(image.path, function (err) {
                 if (err) throw err;
             })
-            //await Image.deleteOne({filename: item})
-        }
+            images.deleteImage(item)        }
         console.log('file deleted');
         return res.status(202).json({
             success: true,

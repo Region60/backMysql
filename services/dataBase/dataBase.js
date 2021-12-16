@@ -1,6 +1,6 @@
 const mysql = require('mysql2')
 const colors = require('colors')
-const {configApp} = require('../../configApp/configApp')
+const { configApp } = require('../../configApp/configApp')
 
 
 const createPoolMysql = mysql.createPool({
@@ -89,17 +89,29 @@ async function dataBaseSearch(table, column, value) {
 }
 
 async function addItemForTable(partQuery) {
-    function requestCreateUser() {
+    function requestAddItem() {
         try {
             return createPoolMysql.promise().query(
                 `INSERT INTO ${partQuery}`)
         } catch (e) {
-            console.error(`Ошибка при регистрации пользователя: ${userEmail}. ${e.message.bgRed.black}`)
+            console.error(`Ошибка при добавлении в таблицу: ${e.message.bgRed.black}`)
         }
     }
 
-    let response = await requestCreateUser()
+    let response = await requestAddItem()
     return response[0]
+}
+
+ function deleteItemForTable(idItem,column,table) {
+    function requestDeleteItem() {
+        try {
+ createPoolMysql.query(
+    `DELETE FROM ${table} WHERE ${column}='${idItem}';`
+)
+        } catch (e) {
+            console.error()
+        }
+    }
 }
 
 
@@ -107,3 +119,4 @@ module.exports.createDataBase = createDataBase
 module.exports.dataBaseSearch = dataBaseSearch
 module.exports.createTable = createTable
 module.exports.addItemForTable = addItemForTable
+module.exports.deleteItemForTable = deleteItemForTable
