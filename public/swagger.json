@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Back end for gallery",
+    "title": "Back end with Mysql",
     "description": "Простой бэкэнд для галереи с регистрацией пользователей и загрузкоой изображений с СУБД Mysql",
     "version": "1.0",
     "contact": {
@@ -42,12 +42,12 @@
         ],
         "responses": {
           "200": {
-            "description": "User object + JWS token",
+            "description": "User object + JWS tokens",
             "schema": {
               "type": "string",
               "example": {
                 "user": {
-                  "_id": "5ff46730dd0c4c2218b",
+                  "_id": "1",
                   "name": "Maksim",
                   "email": "_max_kot@mail.ru",
                   "password": "$2a$10$nLHFCWF",
@@ -87,7 +87,7 @@
                 "type": "string"
               },
               "example": {
-                "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFrc2ltIiwiZW1haWwiOiJfbWF4X2tvdEBtYWlsLnJ1IiwiX2lkIjoiNWZmNDY3MzBkZDBjNGMyMjE4Yjk1MTEwIiwiaWF0IjoxNjEyOTAyODQ4LCJleHAiOjE2MTI5ODkyNDh9.iZkKjK109PgZaD-JzAPhnfsiMn4F0sr0U1cZiKpY-KM"
+                "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWFrc2ltIiwiZW1haWwiOiJfbWF4X2tvdEBtYWlsLnJ1IiwiX2lkIjoiNWZmNDY3MzBkZDBjNGMyMjE4Yjk1MTEwIiwiaWF0IjoxNjEyOTAyODQ4LCJleHAiOjE2MTI5ODkyNDh9.iZkKjK109PgZaD-JzAPhnfsiMn4F0sr0U1cZiKpY-KM"
               }
             }
           },

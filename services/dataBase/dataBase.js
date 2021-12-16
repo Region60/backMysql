@@ -1,13 +1,14 @@
 const mysql = require('mysql2')
 const colors = require('colors')
-const { configApp } = require('../../configApp/configApp')
+const {configApp} = require('../../configApp/configApp')
+
 
 
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: configApp.dataBaseConfig.password,
-    database: configApp.dataBaseConfig.name,
+    database: configApp.dataBaseConfig.nameDataBase,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -49,7 +50,7 @@ function createDataBase(nameDataBase) {
         createTable(i.query, i.name, dataBaseConfig.name)
     })*/
     for (key in configApp.dataBaseConfig.tables) {
-        createTable(configApp.dataBaseConfig.tables[key].queryCreatTable, configApp.dataBaseConfig.tables[key].name, configApp.dataBaseConfig.name)
+        createTable(configApp.dataBaseConfig.tables[key].queryCreatTable, configApp.dataBaseConfig.tables[key].nameTables, configApp.dataBaseConfig.nameDataBase)
     }
 }
 
@@ -102,15 +103,13 @@ async function addItemForTable(partQuery) {
     return response[0]
 }
 
- function deleteItemForTable(idItem,column,table) {
-    function requestDeleteItem() {
-        try {
- createPoolMysql.query(
-    `DELETE FROM ${table} WHERE ${column}='${idItem}';`
-)
-        } catch (e) {
-            console.error()
-        }
+function deleteItemForTable(idItem, column, table) {
+    try {
+        createPoolMysql.query(
+            `DELETE FROM ${table} WHERE ${column}='${idItem}';`
+        )
+    } catch (e) {
+        console.error()
     }
 }
 
