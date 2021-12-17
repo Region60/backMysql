@@ -3,7 +3,7 @@ const { configApp } = require('../../configApp/configApp')
 
 
 async function findImage(filename) {
-  return await dataBase.dataBaseSearch(configApp.dataBaseConfig.tables.images.name, 'FileName', filename)
+  return await dataBase.dataBaseSearch(configApp.dataBaseConfig.tables.images.nameTables, 'FileName', filename)
 
 }
 
@@ -14,7 +14,8 @@ async function addImage(path, filename) {
 }
 
 function deleteImage(ImageName) {
-  dataBase.deleteItemForTable(ImageName, 'FileName', configApp.dataBaseConfig.tables.images.name)
+  console.log(ImageName)
+  dataBase.deleteItemForTable(ImageName, 'FileName', configApp.dataBaseConfig.tables.images.nameTables)
 }
 
 module.exports.findImage = findImage

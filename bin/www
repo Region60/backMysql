@@ -16,7 +16,7 @@ const appConfig = ('../configApp/configApp')
 console.log(appConfig)
 
 
-dataBase.createDataBase(configApp.dataBaseConfig.name)
+dataBase.createDataBase(configApp.dataBaseConfig.nameDataBase)
 
 
 
