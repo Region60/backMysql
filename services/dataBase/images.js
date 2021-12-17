@@ -4,13 +4,11 @@ const { configApp } = require('../../configApp/configApp')
 
 async function findImage(filename) {
   return await dataBase.dataBaseSearch(configApp.dataBaseConfig.tables.images.nameTables, 'FileName', filename)
-
 }
 
 async function addImage(path, filename) {
   let string = `images (Path, FileName)values('${path}','${filename}')`
   return await dataBase.addItemForTable(string)
-
 }
 
 function deleteImage(ImageName) {
