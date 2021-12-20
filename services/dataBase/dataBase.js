@@ -1,6 +1,6 @@
 const mysql = require('mysql2')
 const colors = require('colors')
-const {configApp} = require('../../configApp/configApp')
+const {configApp} = require('../../configApp/configApp.ts')
 
 
 const createPoolMysql = mysql.createPool({
@@ -45,7 +45,6 @@ function createDataBase(nameDataBase) {
                 }
             }
         })
-
     for (key in configApp.dataBaseConfig.tables) {
         createTable(configApp.dataBaseConfig.tables[key].queryCreatTable, configApp.dataBaseConfig.tables[key].nameTables, configApp.dataBaseConfig.nameDataBase)
     }

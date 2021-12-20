@@ -1,7 +1,12 @@
-const configApp = {
+interface IConfigApp {
+    dataBaseConfig: Object,
+    dirSaveImages: string
+}
+
+const configApp: IConfigApp = {
     dataBaseConfig: {
         nameDataBase: 'appdb',
-        password: 'qwertyui',
+        password: 'qwerty',
         tables: {
             users: {
                 nameTables: 'users',

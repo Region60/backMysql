@@ -1,6 +1,6 @@
 const users = require('../services/dataBase/users')
 const images = require('../services/dataBase/images')
-const configApp = require('../configApp/configApp')
+const configApp = require('../configApp/configApp.ts')
 
 const {Router} = require('express');
 const router = Router()

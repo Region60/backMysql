@@ -1,5 +1,5 @@
 const dataBase = require('./dataBase')
-const {configApp} = require('../../configApp/configApp')
+const {configApp} = require('../../configApp/configApp.ts')
 
 
 
