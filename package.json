@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "start": "tsc --watch",
+    "built:watch": "nodemon ./bin/www"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -22,12 +22,15 @@
     "nodemon": "^2.0.6",
     "sendgrid": "^5.2.3",
     "swagger-ui-express": "^4.1.6",
-    "yarn": "^1.22.17"
+    "typescript": "^4.5.4"
   },
   "devDependencies": {
-    "@types/node": "^16.11.11",
+    "@types/express": "^4.17.13",
+    "@types/nedb": "^1.8.12",
+    "@types/node": "^17.0.6",
     "colors": "^1.4.0",
     "i": "^0.3.7",
-    "typescript": "^4.5.2"
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
   }
 }

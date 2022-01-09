@@ -12,8 +12,6 @@ const app = require('../app')
 const debug = require('debug')('backproject:server')
 const http = require('http')
 const keys = require('../keys/index')
-const appConfig = ('../configApp/configApp')
-console.log(appConfig)
 
 
 dataBase.createDataBase(configApp.dataBaseConfig.nameDataBase)

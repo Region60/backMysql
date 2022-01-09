@@ -3,10 +3,9 @@ const colors = require('colors')
 const {configApp} = require('../../configApp/configApp')
 
 
-
 const createPoolMysql = mysql.createPool({
     host: 'localhost',
-    user: 'root',
+    user: 'user01',
     password: configApp.dataBaseConfig.password,
     database: configApp.dataBaseConfig.nameDataBase,
     waitForConnections: true,
@@ -18,7 +17,7 @@ const createPoolMysql = mysql.createPool({
 function createDataBase(nameDataBase) {
     const connection = mysql.createConnection({
         host: 'localhost',
-        user: 'root',
+        user: 'user01',
         password: configApp.dataBaseConfig.password,
     });
     connection.connect(function (err) {
@@ -46,9 +45,6 @@ function createDataBase(nameDataBase) {
                 }
             }
         })
-    /*dataBaseConfig.tables.forEach((i) => {
-        createTable(i.query, i.name, dataBaseConfig.name)
-    })*/
     for (key in configApp.dataBaseConfig.tables) {
         createTable(configApp.dataBaseConfig.tables[key].queryCreatTable, configApp.dataBaseConfig.tables[key].nameTables, configApp.dataBaseConfig.nameDataBase)
     }
@@ -84,7 +80,6 @@ async function dataBaseSearch(table, column, value) {
             console.error(e.message.bgRed.black)
         }
     }
-
     let response = await requestFindUser()
     return response[0][0]
 }
@@ -98,7 +93,6 @@ async function addItemForTable(partQuery) {
             console.error(`Ошибка при добавлении в таблицу: ${e.message.bgRed.black}`)
         }
     }
-
     let response = await requestAddItem()
     return response[0]
 }

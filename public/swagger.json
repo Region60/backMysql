@@ -24,7 +24,7 @@
         "description": "Логинизация пользователя",
         "parameters": [
           {
-            "name": "{email, password}",
+            "name": "{userEmail, password}",
             "in": "body",
             "description": "Электронный адрес и пароль пользователя",
             "required": true,
@@ -34,7 +34,7 @@
                 "type": "string"
               },
               "example": {
-                "email": "_max_kot@mail.ru",
+                "userEmail": "_max_kot@mail.ru",
                 "password": "123456"
               }
             }

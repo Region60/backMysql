@@ -1,5 +1,5 @@
 const generateToken = require('../public/generateToken')
-
+ 
 const key = require('../keys/index')
 const jwt = require('jsonwebtoken')
 
@@ -46,6 +46,7 @@ function auth(req, res, next) {
         } else {
             let refreshToken = tokens[1]
             let payload
+
             let {name, email, _id} = jwt.decode(accessToken)
             payload = {
                 name: name,
