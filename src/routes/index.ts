@@ -1,7 +1,8 @@
+import { NextFunction, Request, Response } from "express";
+
 const users = require('../services/dataBase/users')
 const images = require('../services/dataBase/images')
 const configApp = require('../configApp/configApp')
-
 const { Router } = require('express');
 const router = Router()
 const generateToken = require('../public/generateToken')
@@ -13,15 +14,14 @@ const upload = multer({ dest: configApp.configApp.dirSaveImages })
 const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('../public/swagger.json')
 
-router.get('/', (req, res, next) => {
+router.get('/', (req: Request, res: Response) => {
     res.render('index', { title: 'BackEnd' });
 });
 
-router.post('/register', async (req, res,) => {
+router.post('/register', async (req: Request, res: Response) => {
     try {
         const { firstName, userEmail, userPassword } = req.body
         const candidate = await users.findUser(userEmail)
-        console.log(candidate)
         if (candidate.length > 0) {
             console.log(`Пользователь ${candidate.UserEmail} найден`)
             res.send('Пользователь с таким email уже существует')
@@ -41,13 +41,13 @@ router.post('/register', async (req, res,) => {
             }
 
         }
-    } catch (e) {
+    } catch (e: any) {
         console.error((e.message).bgRed.black)
 
     }
 })
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: Request, res: Response) => {
     try {
         const { userEmail, userPassword } = req.body
         const candidate = await users.findUser(userEmail)
@@ -57,7 +57,7 @@ router.post('/login', async (req, res) => {
                 message: "пользователь с таким электронным адресом не найден"
             })
         }
-        bcrypt.compare(userPassword, candidate.UserPassword, function (err, valid) {
+        bcrypt.compare(userPassword, candidate.UserPassword, function (err:any, valid:any) {
             if (!valid) {
                 console.log(candidate)
                 return res.status(404).json({
@@ -86,24 +86,25 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.get('/testJwt', auth, async function (req, res) {
+router.get('/testJwt', auth, async function (req: Request, res: Response) {
     try {
         return res.status(201).json({
             success: true,
             message: "Its work"
         })
-    } catch (e) {
+    } catch (e:any) {
         console.log(e.blue)
         return res.status(404).json({
             success: true,
-            message: "Dont work".bgMagenta
+            message: "Dont work"
         })
     }
 })
 
-router.post('/loadImage', auth, upload.array('image_save', 30), async function (req, res) {
+//типизировать req.filter.forEach
+router.post('/loadImage', auth, upload.array('image_save', 30), async function (req: any, res: Response) {
     try {
-        await req.files.forEach((i) => {
+        await req.files.forEach((i:Express.Multer.File) => {
             console.log(i)
             const { path, filename } = i
             images.addImage(path, filename)
@@ -121,12 +122,12 @@ router.post('/loadImage', auth, upload.array('image_save', 30), async function (
     }
 })
 
-router.delete('/deleteImage', auth, async (req, res) => {
+router.delete('/deleteImage', auth, async (req: Request, res: Response) => {
     try {
         for (const item of req.body) {
             const image = await images.findImage(item)
             console.log(image)
-            await fs.unlink(image.Path, function (err) {
+            await fs.unlink(image.Path, function (err:any) {
                 if (err) throw err;
             })
             images.deleteImage(image.FileName)
@@ -147,7 +148,7 @@ router.delete('/deleteImage', auth, async (req, res) => {
 
 })
 
-router.get('/getImage', async (req, res) => {
+router.get('/getImage', async (req: Request, res: Response) => {
     try {
         let image = await images.findImage(req.body)
         return res.status(200)

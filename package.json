@@ -8,6 +8,7 @@
     "dev:debug": "nodemon --config nodemon.json --inspect-brk src/www.ts"
   },
   "dependencies": {
+    "@types/multer": "^1.4.7",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "debug": "^2.6.9",
@@ -27,7 +28,6 @@
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.6",
-    "colors": "^1.4.0",
     "nodemon": "^2.0.15",
     "ts-node": "^10.4.0",
     "webpack": "^5.65.0",

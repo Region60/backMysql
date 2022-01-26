@@ -1,10 +1,12 @@
+import { NextFunction, Request, Response } from "express"
+
 const generateToken = require('../../src/public/generateToken')
  
 const key = require('../keys/index')
 const jwt = require('jsonwebtoken')
 
 
-function switches(error, response) {
+function switches(error:any, response: Response) {
     switch (error.name) {
         case  'TokenExpiredError':
             console.log('TokenExpiredError')
@@ -27,16 +29,16 @@ function switches(error, response) {
     }
 }
 
-function auth(req, res, next) {
+function auth(req: Request, res: Response, next:NextFunction) {
     try {
-        let tokens = req.headers['authorization'].split(',')
+        let tokens: Array<string> = req.headers['authorization'].split(',')
         let accessToken = tokens[0]
 
         if (!tokens) {
             return res.send('отсутствует токен утентификации')
         }
         if (tokens.length === 1) {
-            jwt.verify(accessToken, key.JWT_SECRET, function (err, decoded) {
+            jwt.verify(accessToken, key.JWT_SECRET, function (err: Error, decoded) {
                 if (err) {
                     switches(err, res)
                 } else {
