@@ -38,7 +38,7 @@ function auth(req: Request, res: Response, next:NextFunction) {
             return res.send('отсутствует токен утентификации')
         }
         if (tokens.length === 1) {
-            jwt.verify(accessToken, key.JWT_SECRET, function (err: Error, decoded) {
+            jwt.verify(accessToken, key.JWT_SECRET, function (err: Errorr, decoded) {
                 if (err) {
                     switches(err, res)
                 } else {
