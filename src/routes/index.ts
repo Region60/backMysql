@@ -22,10 +22,12 @@ router.post('/register', async (req: Request, res: Response) => {
     try {
         const { firstName, userEmail, userPassword } = req.body
         const candidate = await users.findUser(userEmail)
-        if (candidate.length > 0) {
+        console.log(candidate)
+        if (candidate.UserEmail) {
             console.log(`Пользователь ${candidate.UserEmail} найден`)
             res.send('Пользователь с таким email уже существует')
         } else {
+            console.log("create")
             const hashPassword = await bcrypt.hash(userPassword, 10)
             let response = await users.createUser(firstName, userEmail, hashPassword)
             if (response) {

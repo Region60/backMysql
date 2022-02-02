@@ -5,6 +5,11 @@ const generateToken = require('../../src/public/generateToken')
 const key = require('../keys/index')
 const jwt = require('jsonwebtoken')
 
+interface Ipayload {
+    name: string,
+    email: string,
+    _id: number
+}
 
 function switches(error:any, response: Response) {
     switch (error.name) {
@@ -21,24 +26,25 @@ function switches(error:any, response: Response) {
                 message: error.message,
             })
         case 'NotBeforeError':
-            console.log('NotBeforeError')
-            return response.status(401).json({
-                success: false,
-                message: error.message,
-            })
+                console.log('NotBeforeError')
+                return response.status(401).json({
+                    success: false,
+                    message: error.message,
+                })
+        }
     }
-}
 
 function auth(req: Request, res: Response, next:NextFunction) {
     try {
-        let tokens: Array<string> = req.headers['authorization'].split(',')
-        let accessToken = tokens[0]
+        let tokensArr: any = req.headers['authorization']
+        let tokens: Array<string> = tokensArr.split(',')
+        let accessToken: string = tokens[0] 
 
         if (!tokens) {
             return res.send('отсутствует токен утентификации')
         }
         if (tokens.length === 1) {
-            jwt.verify(accessToken, key.JWT_SECRET, function (err: Errorr, decoded) {
+            jwt.verify(accessToken, key.JWT_SECRET, function (err: Error, decoded:any) {
                 if (err) {
                     switches(err, res)
                 } else {
@@ -47,7 +53,7 @@ function auth(req: Request, res: Response, next:NextFunction) {
             })
         } else {
             let refreshToken = tokens[1]
-            let payload
+            let payload: Ipayload
 
             let {name, email, _id} = jwt.decode(accessToken)
             payload = {
@@ -55,7 +61,7 @@ function auth(req: Request, res: Response, next:NextFunction) {
                 email: email,
                 _id: _id
             }
-            jwt.verify(refreshToken, key.JWT_SECRET, function (err, decoded) {
+            jwt.verify(refreshToken, key.JWT_SECRET, function (err:Error, decoded:any) {
                 if (err) {
                     console.log(err)
                     switches(err, res)
