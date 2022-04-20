@@ -28,8 +28,11 @@ interface Icolumn {
 export const configApp: IconfigApp = {
     dataBaseConfig: {
 
-        nameDataBase: 'appdb',
-        password: 'cjkzhbc86VFRCBV!',
+        //nameDataBase: 'appdb',
+        nameDataBase: 'dockertest',
+        //password: 'cjkzhbc86VFRCBV!',
+        password: 'qwertyui',
+       
         tables: {
             users: {
                 nameTables: 'users',
